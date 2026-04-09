@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 class Csharp
@@ -54,14 +54,19 @@ class Csharp
             System.Console.Clear();
         }
     }
-    private static double[] ArrayInitialization()
+    private static unsafe double[] ArrayInitialization()
     {
         Random randomNumber = new Random();
         int randomNumberOfElems = randomNumber.Next(1, 50);
         double[] array = new double[randomNumberOfElems];
-        for (int i = 0; i < array.Length; i++)
+        fixed (double* ptr = array)
         {
-            array[i] = Math.Round(randomNumber.NextDouble() * 20 - 10, 1);
+            double* current = ptr;
+            for (int i = 0; i < randomNumberOfElems; i++)
+            {
+                *current = Math.Round(randomNumber.NextDouble() * 20 - 10, 1);
+                current++;
+            }
         }
         return array;
     }
